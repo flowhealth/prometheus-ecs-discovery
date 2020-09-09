@@ -213,6 +213,19 @@ func (t *AugmentedTask) ExporterInformation() []*PrometheusTaskInfo {
 				continue
 			}
 
+			if len(filter) != 0 {
+				v, ok := d.DockerLabels[filter[0]]
+				if !ok {
+					// Nope, the filter label isn't present.
+					continue
+				}
+				if len(filter) == 2 && v != filter[1] {
+					// Nope, the filter label value doesn't match.
+					continue
+				}
+			}
+
+
 			if len(i.NetworkBindings) != 1 {
 				// Dynamic port mapping is only supported with a single binding.
 				// Otherwise, how would we know which port to use?
